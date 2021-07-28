@@ -11,14 +11,14 @@ class XStickyRender extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, MultiChildLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, MultiChildLayoutParentData> {
-  ScrollPosition _scrollPosition;
+  ScrollPosition? _scrollPosition;
 
   XStickyRender(
-      {ScrollPosition scrollPosition,
-      RenderBox header,
-      RenderBox content,
-      RenderBox footer,
-      String debugLabel})
+      {ScrollPosition? scrollPosition,
+      RenderBox? header,
+      RenderBox? content,
+      RenderBox? footer,
+      String? debugLabel})
       : _scrollPosition = scrollPosition {
     if (header != null) add(header);
     if (content != null) add(content);
@@ -29,7 +29,7 @@ class XStickyRender extends RenderBox
     if (newValue == _scrollPosition) {
       return;
     }
-    final ScrollPosition oldValue = _scrollPosition;
+    final ScrollPosition? oldValue = _scrollPosition;
     _scrollPosition = newValue;
     markNeedsLayout();
     if (attached) {
@@ -50,24 +50,24 @@ class XStickyRender extends RenderBox
     super.detach();
   }
 
-  RenderBox get _headerBox => lastChild;
-  RenderBox get _footerBox => childBefore(_headerBox);
-  RenderBox get _contentBox => childBefore(_footerBox);
+  RenderBox? get _headerBox => lastChild;
+  RenderBox? get _footerBox => childBefore(_headerBox!);
+  RenderBox? get _contentBox => childBefore(_footerBox!);
 
   @override
   void performLayout() {
     assert(childCount == 3);
 
     final childConstraints = constraints.loosen();
-    _headerBox.layout(childConstraints, parentUsesSize: true);
-    _contentBox.layout(childConstraints, parentUsesSize: true);
-    _footerBox.layout(childConstraints, parentUsesSize: true);
+    _headerBox!.layout(childConstraints, parentUsesSize: true);
+    _contentBox!.layout(childConstraints, parentUsesSize: true);
+    _footerBox!.layout(childConstraints, parentUsesSize: true);
 
-    final headerHeight = _headerBox.size.height;
-    final contentHeight = _contentBox.size.height;
-    final footerHeight = _footerBox.size.height;
+    final headerHeight = _headerBox!.size.height;
+    final contentHeight = _contentBox!.size.height;
+    final footerHeight = _footerBox!.size.height;
 
-    final contentWidth = _contentBox.size.width;
+    final contentWidth = _contentBox!.size.width;
 
     final width = max(constraints.minWidth, contentWidth);
     final height =
@@ -84,26 +84,26 @@ class XStickyRender extends RenderBox
     // 控制header的最大偏移                             /* 减去footer */
     final double maxOffset = height - headerHeight - footerHeight;
     final headerParentData =
-        _headerBox.parentData as MultiChildLayoutParentData;
+        _headerBox!.parentData as MultiChildLayoutParentData;
 
     headerParentData.offset =
         Offset(0.0, max(0.0, min(-scrollOffset, maxOffset)));
 
     // content
     final contentParentData =
-        _contentBox.parentData as MultiChildLayoutParentData;
+        _contentBox!.parentData as MultiChildLayoutParentData;
     contentParentData.offset = Offset(0.0, headerHeight);
 
     // footer
     // 计算footer的最大偏移
     final double footerMaxOffset = height - contentHeight - footerHeight;
     final footerParentData =
-        _footerBox.parentData as MultiChildLayoutParentData;
+        _footerBox!.parentData as MultiChildLayoutParentData;
     // 计算footer的原始位置
     final double footerMinOffset = height - footerHeight;
     // 获取footer控件的位置，保证能贴在底部
     final footerOffset =
-        _scrollPosition.viewportDimension - footerHeight - scrollOffset;
+        _scrollPosition!.viewportDimension - footerHeight - scrollOffset;
 
     footerParentData.offset =
         Offset(0.0, max(min(footerOffset, footerMinOffset), footerMaxOffset));
@@ -111,7 +111,7 @@ class XStickyRender extends RenderBox
 
   double _contentOffset() {
     final scrollBox =
-        _scrollPosition.context.notificationContext.findRenderObject();
+        _scrollPosition!.context.notificationContext!.findRenderObject();
     if (scrollBox?.attached ?? false) {
       try {
         return localToGlobal(Offset.zero, ancestor: scrollBox).dy;
@@ -130,35 +130,35 @@ class XStickyRender extends RenderBox
 
   @override
   double computeMaxIntrinsicWidth(double height) {
-    return _contentBox.getMaxIntrinsicWidth(height);
+    return _contentBox!.getMaxIntrinsicWidth(height);
   }
 
   @override
   double computeMinIntrinsicWidth(double height) {
-    return _contentBox.getMinIntrinsicWidth(height);
+    return _contentBox!.getMinIntrinsicWidth(height);
   }
 
   @override
   double computeMaxIntrinsicHeight(double width) {
-    return _headerBox.getMaxIntrinsicHeight(width) +
-        _contentBox.getMaxIntrinsicHeight(width) +
-        _footerBox.getMaxIntrinsicHeight(width);
+    return _headerBox!.getMaxIntrinsicHeight(width) +
+        _contentBox!.getMaxIntrinsicHeight(width) +
+        _footerBox!.getMaxIntrinsicHeight(width);
   }
 
   @override
   double computeMinIntrinsicHeight(double width) {
-    return _headerBox.getMinIntrinsicHeight(width) +
-        _contentBox.getMinIntrinsicHeight(width) +
-        _footerBox.getMinIntrinsicHeight(width);
+    return _headerBox!.getMinIntrinsicHeight(width) +
+        _contentBox!.getMinIntrinsicHeight(width) +
+        _footerBox!.getMinIntrinsicHeight(width);
   }
 
   @override
-  double computeDistanceToActualBaseline(TextBaseline baseline) {
+  double? computeDistanceToActualBaseline(TextBaseline baseline) {
     return defaultComputeDistanceToHighestActualBaseline(baseline);
   }
 
   @override
-  bool hitTest(BoxHitTestResult result, {Offset position}) {
+  bool hitTest(BoxHitTestResult result, {required Offset position}) {
     return defaultHitTestChildren(result, position: position);
   }
 

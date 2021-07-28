@@ -7,10 +7,10 @@ import './render.dart';
 
 class XSticky extends MultiChildRenderObjectWidget {
   XSticky({
-    Key key,
-    @required this.header,
-    @required this.content,
-    @required this.footer,
+    Key? key,
+    required this.header,
+    required this.content,
+    required this.footer,
     this.controller,
   }) : super(
           key: key,
@@ -21,12 +21,12 @@ class XSticky extends MultiChildRenderObjectWidget {
   final Widget content;
   final Widget footer;
 
-  final ScrollController controller;
+  final ScrollController? controller;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     final scrollPosition =
-        this.controller?.position ?? Scrollable.of(context).position;
+        this.controller?.position ?? Scrollable.of(context)!.position;
     assert(scrollPosition != null);
     return XStickyRender(
         scrollPosition: scrollPosition, debugLabel: key.toString());
@@ -35,7 +35,7 @@ class XSticky extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(BuildContext context, XStickyRender renderObject) {
     final scrollPosition =
-        this.controller?.position ?? Scrollable.of(context).position;
+        this.controller?.position ?? Scrollable.of(context)!.position;
     assert(scrollPosition != null);
     renderObject..scrollPosition = scrollPosition;
   }
