@@ -34,7 +34,7 @@ class XStickyRender extends RenderBox
     markNeedsLayout();
     if (attached) {
       oldValue?.removeListener(markNeedsLayout);
-      newValue?.addListener(markNeedsLayout);
+      newValue.addListener(markNeedsLayout);
     }
   }
 
